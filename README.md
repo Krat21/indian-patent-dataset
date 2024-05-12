@@ -42,3 +42,6 @@ extract-journal.py : Extract Journal from [here](https://search.ipindia.gov.in/I
 extract-application.py : Extract applications from a give journal and pdf file
 
 extract-grants.py : Extract grants from a give journal and pdf file
+
+## Coming Soon...
+extract abstract images in applications
