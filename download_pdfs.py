@@ -40,7 +40,7 @@ def download_Pdfs(journal_no):
         dropdown = Select(driver.find_element(By.NAME, 'Journal_length'))
 
         # Select option with values "5" "50", "100", "-1" (-1 for all)
-        dropdown.select_by_value('50')
+        dropdown.select_by_value('100')
 
         # Locate all the forms that contain the file information and the buttons
         forms = driver.find_elements(By.XPATH, "//form[@action='/IPOJournal/Journal/ViewJournal']")

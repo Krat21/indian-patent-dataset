@@ -8,16 +8,16 @@ from download_pdfs import download_Pdfs
 def extractJournalAndDownloadPdfs (): 
     #Download specific year
     downloadYearWise = True     #False
-    downloadYear = 2024         #0
+    downloadYear = 2023         #0
 
     #Scan for new journals
-    filteredJournals = extract_journal_details(downloadYearWise, downloadYear) #last run: 26/05/2024
+    filteredJournals = extract_journal_details(downloadYearWise, downloadYear) #last run: 27/05/2024
 
     #download pdfs of each new journal
     for index, row in filteredJournals.iterrows():
             download_Pdfs(row['Journal No.'])
 
-# extractJournalAndDownloadPdfs()
+extractJournalAndDownloadPdfs()
 
 #directory where PDFs downloaded
 directroy = "pdf_download_v2"

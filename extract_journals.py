@@ -111,5 +111,8 @@ def extract_journal_details(yearWise, year):
 
      #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    df = extract_journal_details()
-    df.to_csv('applications.csv', mode='w', header=True, index=False)
+    yearWise = True
+    year = 2023
+    df = extract_journal_details(yearWise, year)
+    csv_filename = 'journals_' + str(len (df)) +'.csv'
+    df.to_csv('csv_filename', mode='w', header=True, index=False)

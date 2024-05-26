@@ -202,7 +202,7 @@ def extract_applications(filename):
     
  #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    file = 'ViewJournal (3).pdf' #enter file name
+    file = '21_2024_1.pdf' #enter file name
     df = pd.DataFrame()
 
     df = extract_applications(file)
