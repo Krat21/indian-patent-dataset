@@ -1,10 +1,9 @@
 import fitz
 import pandas as pd
-import re
 
 def extract_grants(filename):
 
-    journal = fitz.open('/Users/kratik/Documents/GitHub/indian-patent-dataset/pdf_download/' + filename) #enter user directory
+    journal = fitz.open('/Users/kratik/Documents/GitHub/indian-patent-dataset/pdf_download_v2/' + filename) #enter pdfs downloaded directory
     #print(journal.metadata)
 
     grant_text_lookup = "Publication Under Section 43(2) in Respect of the Grant"
@@ -31,17 +30,22 @@ def extract_grants(filename):
                                     'Date of Priority', 'Title of Invention', 'Patentee Name', 'Date of Application Publication', 'Office']
     df_grants = pd.DataFrame()
 
-    # df_temp = pd.DataFrame()
     for page in journal:
-        page.search_for(grant_text_lookup)
+        # page.search_for(grant_text_lookup)
         if page.number >= page_num_start_input:
             tabs = page.find_tables()
             if tabs.tables:
                 table_data = tabs[0].extract()
                 for row in table_data:
-                    cleaned_row = [string.replace('\n', ' ') for string in row]
-                    #check if the row's value are of previous page
-                    df_grants = pd.concat([df_grants, pd.DataFrame([cleaned_row])], ignore_index=True)
+                    try:
+                        if(len(row)>=6):
+                            cleaned_row = [string.replace('\n', ' ') for string in row]
+                            # print(cleaned_row)
+                            
+                            #check if the row's value are of previous page
+                            df_grants = pd.concat([df_grants, pd.DataFrame([cleaned_row])], ignore_index=True)
+                    except:
+                        print (f'Error in file {filename} at page no. {page.number}')
 
     #handling mismatch of headers - exception
     if len(df_grants.columns) < len(headers):
@@ -67,7 +71,7 @@ def extract_grants(filename):
     df_grants['Date of Priority'] = df_grants['Date of Priority'].apply(lambda x: ''.join(x.split()))
     df_grants['Date of Application Publication'] = df_grants['Date of Application Publication'].astype(str).apply(lambda x: ''.join(x.split()))
     df_grants['Serial No.'].replace('', None, inplace=True)
-    df_grants['journal'] = journal_footer.replace('The Patent Office Journal No. ','').replace(' Dated  ','')
+    df_grants['journal'] = journal_footer.replace('The Patent Office Journal No. ','').replace('Dated  ','')
 
     df_grants_final = pd.DataFrame()
     df_grants_final = df_grants.dropna(subset=['Serial No.'])
@@ -78,7 +82,7 @@ def extract_grants(filename):
     
  #This file can be run independently to extract grants   
 if __name__ == "__main__":
-    file = 'ViewJournal (4).pdf' #enter file name
+    file = '21_2024_2.pdf' #enter file name
     df = pd.DataFrame()
 
     df = extract_grants(file)

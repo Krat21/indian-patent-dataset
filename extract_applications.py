@@ -4,7 +4,7 @@ import re
 
 def extract_applications(filename):
 
-    journal = fitz.open('/Users/kratik/Documents/GitHub/indian-patent-dataset/pdf_download/' + filename)
+    journal = fitz.open('/Users/kratik/Documents/GitHub/indian-patent-dataset/pdf_download_v2/' + filename) #enter pdfs downloaded directory
     #print(journal.metadata)
 
     application_text_lookup = "(12) PATENT APPLICATION PUBLICATION"
@@ -65,7 +65,7 @@ def extract_applications(filename):
         try:
             application_number_match = re.search(application_number_pattern, list(extracted_values.keys())[0])
         except IndexError:
-            print ('Error in file ' + filename + ', page no. ' + ' is missing')
+            print (f'Error in file {filename} at page no. {page.number}')
 
         if application_number_match:
             application_number = application_number_match.group(1)
@@ -76,7 +76,7 @@ def extract_applications(filename):
 
         #exception - Abstract not found in the page, because shifted to next page - NEED TO BE WORKED
         if 'Abstract' not in extracted_values:
-            print ('Error in file ' + filename + ', application no. ' + extracted_values['application_number'] + ' is missing')
+            print (f'Error in file {filename}, with application no. {extracted_values['application_number']}')
             break
 
         #extract page count and claim count:
@@ -168,7 +168,7 @@ def extract_applications(filename):
         extracted_values['applicants'] = applicants_list
         extracted_values['addresses'] = addresses
         extracted_values['Publication Type'] = 'Early' #NEED TO BE CALCULATED
-        print(extracted_values)
+        # print(extracted_values)
 
         #extract inventors
         inv_pattern = r'\d+\)([A-Za-z]+.*?)(?=\nAddress)'
