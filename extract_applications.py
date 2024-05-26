@@ -171,10 +171,14 @@ def extract_applications(filename):
         # print(extracted_values)
 
         #extract inventors
+        # print(extracted_values['Name of Inventor'])
         inv_pattern = r'\d+\)([A-Za-z]+.*?)(?=\nAddress)'
-        inv_names = re.findall(inv_pattern, extracted_values['Name of Inventor'])
-        inv_list = [inv.strip() for inv in inv_names]
-        extracted_values['inventor'] = inv_list
+        try:
+            inv_names = re.findall(inv_pattern, extracted_values['Name of Inventor'])
+            inv_list = [inv.strip() for inv in inv_names]
+            extracted_values['inventor'] = inv_list
+        except:
+            print (f'Error in file {filename}, with application no. {extracted_values['application_number']}')
 
         #remove first entry
         for key in list(extracted_values.keys()):
@@ -202,8 +206,8 @@ def extract_applications(filename):
     
  #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    file = '21_2024_1.pdf' #enter file name
+    file = '18_2023_2.pdf' #enter file name #21_2024_1.pdf
     df = pd.DataFrame()
 
     df = extract_applications(file)
-    df.to_csv('applications.csv', mode='w', header=True, index=False)
+    df.to_csv('applicationsExtracted.csv', mode='w', header=True, index=False)
