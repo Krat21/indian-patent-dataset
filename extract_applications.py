@@ -151,22 +151,26 @@ def extract_applications(filename):
             extracted_values['Divisional Filing Date'] = "NA"
 
         #extract applicants and separate the address
-        applicants = re.split(r'\n\s*(?=\d+\))', extracted_values['Name of Applicant'])
-        address_pattern = r'Address of Applicant\s*:(.*?)(?=\d+\)|$)'
-        applicants_list = []
-        addresses = []
-        for entry in applicants:
-            match = re.search(address_pattern, entry, re.DOTALL)
-            if match:
-                applicant_wo_address = entry.replace(match.group(1),'').replace('\n','').replace('Name of Applicant :','').replace('Address of Applicant :','').strip()
-                addresses.append(match.group(1).strip())
-            else:
-                applicant_wo_address = entry.strip()
-                
-            applicants_list.append(re.sub(r'\d+\)', '',applicant_wo_address))
+        try:
+            applicants = re.split(r'\n\s*(?=\d+\))', extracted_values['Name of Applicant'])
+            address_pattern = r'Address of Applicant\s*:(.*?)(?=\d+\)|$)'
+            applicants_list = []
+            addresses = []
+            for entry in applicants:
+                match = re.search(address_pattern, entry, re.DOTALL)
+                if match:
+                    applicant_wo_address = entry.replace(match.group(1),'').replace('\n','').replace('Name of Applicant :','').replace('Address of Applicant :','').strip()
+                    addresses.append(match.group(1).strip())
+                else:
+                    applicant_wo_address = entry.strip()
+                    
+                applicants_list.append(re.sub(r'\d+\)', '',applicant_wo_address))
 
-        extracted_values['applicants'] = applicants_list
-        extracted_values['addresses'] = addresses
+            extracted_values['applicants'] = applicants_list
+            extracted_values['addresses'] = addresses
+        except:
+            print (f'Error in file {filename}, with application no. {extracted_values['application_number']}')
+        
         extracted_values['Publication Type'] = 'Early' #NEED TO BE CALCULATED
         # print(extracted_values)
 
@@ -206,7 +210,7 @@ def extract_applications(filename):
     
  #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    file = '18_2023_2.pdf' #enter file name #21_2024_1.pdf
+    file = '22_2024_3.pdf' #enter file name #21_2024_1.pdf
     df = pd.DataFrame()
 
     df = extract_applications(file)
