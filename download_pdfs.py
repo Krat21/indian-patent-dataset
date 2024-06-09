@@ -40,7 +40,7 @@ def download_Pdfs(journal_no):
         dropdown = Select(driver.find_element(By.NAME, 'Journal_length'))
 
         # Select option with values "5" "50", "100", "-1" (-1 for all)
-        dropdown.select_by_value('100')
+        dropdown.select_by_value('-1')
 
         # Locate all the forms that contain the file information and the buttons
         forms = driver.find_elements(By.XPATH, "//form[@action='/IPOJournal/Journal/ViewJournal']")
@@ -68,7 +68,7 @@ def download_Pdfs(journal_no):
             print(f"Clicked button {index+1} of {pdfCount} to download journal {journal_no}")
 
             # Wait for the download to complete
-            time.sleep(10)  # Adjust this as necessary to ensure the download completes
+            time.sleep(20)  # Adjust this as necessary to ensure the download completes
 
             # Move and rename the downloaded file
             # Assuming there's only one file being downloaded at a time in the temp directory

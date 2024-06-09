@@ -79,7 +79,7 @@ def extract_journal_details(yearWise, year):
 
             countrowadded = numbers[0] - numbers[1]
             if (countrowadded > 0):
-                print("Found " + str(countrowadded) + "new journal...")
+                print("Found " + str(countrowadded) + " new journal...")
                 
                 #get the latest journal details
                 newJournal = pd.read_csv(last_two_files[0])

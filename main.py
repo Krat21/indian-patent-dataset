@@ -8,9 +8,9 @@ from download_pdfs import download_Pdfs
 def extractJournalAndDownloadPdfs (): 
     #Download specific year
     downloadYearWise = True     #False
-    downloadYear = 2023         #0
+    downloadYear = 2022         #0
 
-    #Scan for new journals
+    #Scan for journals
     filteredJournals = extract_journal_details(downloadYearWise, downloadYear) #last run: 27/05/2024
 
     #download pdfs of each new journal
@@ -63,7 +63,7 @@ print (grant_pdf_files)
 # print (design_pdf_files)
 print (application_pdf_files)
 
-csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/', 'grants.csv') #create a grants.csv
+csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/output/grants', '2022_grants.csv') #create a grants.csv
 for i,file in enumerate(grant_pdf_files):
     print(file + " is running...")
     df = extract_grants(file)
@@ -73,7 +73,7 @@ for i,file in enumerate(grant_pdf_files):
     df.to_csv(csv_file_path, mode='a', header=header_setting, index=False) #save received df in the existing csv
     print(file + " is processed and extracted " + str(len(df)) + " grants")
 
-csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/', 'applications.csv') #create a application.csv
+csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/output/applications', '2022_applications.csv') #create a application.csv
 for i,file in enumerate(application_pdf_files):
     print(file + " is running...")
     df = extract_applications(file)

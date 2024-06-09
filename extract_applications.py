@@ -56,6 +56,8 @@ def extract_applications(filename):
         matches = re.findall(pattern, content)
         extracted_values = {}
 
+        df_final['journal'] = journal_footer.replace('The Patent Office Journal No. ','').replace('Dated  ','')
+
         for group1, group2, group3 in matches:
             extracted_values[re.sub(r'\s{2,}', ' ', group2.strip().replace('\n', ''))] = group3.strip()
 
@@ -195,8 +197,6 @@ def extract_applications(filename):
 
     # remove junk Abstract columns
     # df_final = df_final[df_final.columns[:26]]
-
-    df_final['journal'] = journal_footer.replace('The Patent Office Journal No. ','').replace('Dated  ','')
 
     #page number === no. of rows?
 
