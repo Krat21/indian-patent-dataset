@@ -66,5 +66,5 @@ main.py :  calls each of above scripts
 - terminal log indicating error page no.
 
 ## New Update...
-- Year 2024 - Latest Journal updated - Journal 23/2024 (07/06/2024)
+- Year 2024 - Latest Journal updated - Journal 26/2024 (28/06/2024)
 - Year 2022 Added
