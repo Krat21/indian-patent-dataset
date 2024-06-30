@@ -7,14 +7,16 @@ from download_pdfs import download_Pdfs
 
 def extractJournalAndDownloadPdfs (): 
     #Download specific year
-    downloadYearWise = True     #False
-    downloadYear = 2022         #0
+    downloadType = "Range"     #"Year", "New", "Range"
+    downloadYear = 0         #2921, 0, 0
+    downRange = "31/2021-1/2021" #Give journals in range,else 0
 
     #Scan for journals
-    filteredJournals = extract_journal_details(downloadYearWise, downloadYear) #last run: 27/05/2024
+    filteredJournals = extract_journal_details(downloadType, downloadYear, downRange) #last run: 29/06/2024
 
     #download pdfs of each new journal
     for index, row in filteredJournals.iterrows():
+            print(f"Starting download of {row['Journal No.']}")
             download_Pdfs(row['Journal No.'])
 
 extractJournalAndDownloadPdfs()
@@ -63,7 +65,7 @@ print (grant_pdf_files)
 # print (design_pdf_files)
 print (application_pdf_files)
 
-csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/output/grants', '2022_grants.csv') #create a grants.csv
+csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/output/grants', '2021_grants.csv') #create a grants.csv
 for i,file in enumerate(grant_pdf_files):
     print(file + " is running...")
     df = extract_grants(file)
@@ -73,7 +75,7 @@ for i,file in enumerate(grant_pdf_files):
     df.to_csv(csv_file_path, mode='a', header=header_setting, index=False) #save received df in the existing csv
     print(file + " is processed and extracted " + str(len(df)) + " grants")
 
-csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/output/applications', '2022_applications.csv') #create a application.csv
+csv_file_path = os.path.join('/Users/kratik/Documents/GitHub/indian-patent-dataset/output/applications', '2021_applications.csv') #create a application.csv
 for i,file in enumerate(application_pdf_files):
     print(file + " is running...")
     df = extract_applications(file)
