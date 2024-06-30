@@ -4,7 +4,7 @@ import pandas as pd
 import os
 import re
 
-def extract_journal_details(yearWise, year):
+def extract_journal_details(downType, downYear, downJournals):
     url = 'https://search.ipindia.gov.in/IPOJournal/Journal/Patent'
 
     response = requests.get(url, verify=False)
@@ -55,8 +55,8 @@ def extract_journal_details(yearWise, year):
             
             #get the latest journal details
             allJournals = pd.read_csv(last_file[0]) 
-            filteredJournals = allJournals[allJournals['Journal No.'].str.contains(str(year))]
-            print(filteredJournals)
+            filteredJournals = allJournals[allJournals['Journal No.'].str.contains(str(downYear))]
+            # print(filteredJournals)
 
             return(filteredJournals)
 
@@ -86,8 +86,24 @@ def extract_journal_details(yearWise, year):
                 newRowsinJournal = newJournal[:countrowadded]
                 return(newRowsinJournal)
         
-        if(yearWise):        
+        if(downType == "Year"):
+            print("Running year condition")        
             return checkyearjournal()
+        elif(downType == "Range"):
+            print("Running range condition")
+            year1 = downJournals.split("-")[0].split("/")[1]
+            year2 = downJournals.split("-")[1].split("/")[1]
+            firstJournal = int(downJournals.split("-")[0].split("/")[0])
+            lastJournal = int(downJournals.split("-")[1].split("/")[0])
+            print (lastJournal)
+            if (year1 == year2):
+                downYear = year1
+                rangeJournals = checkyearjournal()
+                rangeJournals['split_col'] = rangeJournals['Journal No.'].str.split('/').str[0].astype(int)
+                filteredJournals = rangeJournals[(rangeJournals['split_col'] >= lastJournal) & (rangeJournals['split_col'] <= firstJournal)]
+                filteredJournals = filteredJournals.drop(columns=['split_col'])
+                print(filteredJournals)
+                return filteredJournals
         else:
             return checknewjournal()
         
@@ -111,8 +127,9 @@ def extract_journal_details(yearWise, year):
 
      #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    yearWise = True
-    year = 2023
-    df = extract_journal_details(yearWise, year)
-    csv_filename = 'journals_' + str(len (df)) +'.csv'
+    downType = "Range"
+    downYear = 0
+    downJournals = "32/2021-1/2021"
+    df = extract_journal_details(downType, downYear, downJournals)
+    csv_filename = 'journals_' + str(len(df)) +'.csv'
     df.to_csv('csv_filename', mode='w', header=True, index=False)
