@@ -42,16 +42,19 @@ extract_application.py : extract applications from a pdf file & outputs csv '202
 extract_grants.py : extract grants from a pdf file & outputs csv '2024_grants.csv'
 
 extract_journal.py : extract Journal details from [here](https://search.ipindia.gov.in/IPOJournal/Journal/Patent) & outputs csv 'journal_910.csv' (910 journals)
-    two modes: 
-        
-    filter mode - Filter based on a year
+    three modes: 
+    "Range" or "Year" or "New"
+
+    range mode - Filter based on a journal range
+    Set downloadType = "Range" and downloadYear = 0 and downRange = "31/2021-1/2021"
+    outputs dataframe, where journals are of the given ranges, currently supports only same year journal range
     
-    Set yearWise = True and year = 2023
-    outputs dataframe, where journals are of the set year (i.e., 2023)
+    year mode - Filter based on a year
+    Set downloadType = "Year" and downloadYear = 2021
+    outputs dataframe, where journals are of the set year (i.e., 2021)
     
-    find new journal added - Finds the latest journal(s)
-    
-    Set yearWise = False and year = 0
+    new mode - find new journal added to IPO - Finds the latest journal(s)
+    Set downloadType = "New" and downloadYear = 0
     outputs dataframe, having rows of new journals added, by comparing with previous csv (i.e., 'journal_910.csv')
 
 download_pdfs.py : download PDFs for a given journal ('16/2024')
@@ -59,12 +62,13 @@ download_pdfs.py : download PDFs for a given journal ('16/2024')
 main.py :  calls each of above scripts
 
 ## Coming Soon...
-- Years 2021 & before
+- Years 2020 & before
 - extract abstract images in applications
 - output in friendly format - json
 - Design Patents
 - terminal log indicating error page no.
+- multi-year range support
 
 ## New Update...
 - Year 2024 - Latest Journal updated - Journal 26/2024 (28/06/2024)
-- Year 2022 Added
+- Year 2021 Added
