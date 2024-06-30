@@ -41,27 +41,41 @@ def download_Pdfs(journal_no):
 
         # Select option with values "5" "50", "100", "-1" (-1 for all)
         dropdown.select_by_value('-1')
-
-        # Locate all the forms that contain the file information and the buttons
-        forms = driver.find_elements(By.XPATH, "//form[@action='/IPOJournal/Journal/ViewJournal']")
         
         filterforms = []
         jounralPdfsName = []
-        # Iterate over each form
-        for i, form in enumerate(forms):
-            # Extract the file name from the hidden input field
-            hidden_input = form.find_element(By.XPATH, ".//input[@type='hidden' and @name='FileName']")
-            file_name = hidden_input.get_attribute("value")
-            
-            if (journal_no in file_name):
-                filterforms.append(form)
-                jounralPdfsName.append(file_name)
+        rows = driver.find_elements(By.XPATH, "//table[@id='Journal']/tbody/tr")
+
+        for row in rows:
+            # extracting data from each row
+            journalNo = row.find_element(By.XPATH, "./td[2]").text.strip()
+            if (journal_no == journalNo.replace('/', '_')):
+                hidden_inputs = row.find_elements(By.XPATH, ".//input[@type='hidden' and @name='FileName']")
+                for hInput in hidden_inputs:
+                    file_name = hInput.get_attribute("value")
+                    file_id = file_name.split("/")[-2]
+                    jounralPdfsName.append(file_name)
+                
+                filterforms = row.find_elements(By.XPATH, ".//form")
+                    
+                # all_hidden_input_eachRow = row.find_elements(By.XPATH, "./td[5]/form/input[@name='FileName']")
         
+        # Locate all the forms that contain the file information and the buttons
+        # forms = driver.find_elements(By.XPATH, "//form[@action='/IPOJournal/Journal/ViewJournal']")
+        # # Iterate over each form    
+        # for i, form in enumerate(forms):
+        #     # Extract the file name from the hidden input field
+        #     hidden_input = form.find_element(By.XPATH, ".//input[@type='hidden' and @name='FileName']")
+        #     file_name = hidden_input.get_attribute("value")
+            
+        #     if (journal_no in file_name):
+        #         filterforms.append(form)
+        #         jounralPdfsName.append(file_name)
+
         pdfCount = len(jounralPdfsName)
         print (f"Located {pdfCount} PDFs")
-        for index, form in enumerate(filterforms):
-            # file_name = os.path.basename(pdfNames)  # Get just the file name part
 
+        for index, form in enumerate(filterforms):
             # Click the submit button within the form to start the download
             button = form.find_element(By.XPATH, ".//button[@type='submit']")
             button.click()
@@ -88,6 +102,6 @@ def download_Pdfs(journal_no):
  
  #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    download_Pdfs('16/2024')
+    download_Pdfs('32/2021')
     # print(df)
     # df.to_csv('applications.csv', mode='w', header=True, index=False)
