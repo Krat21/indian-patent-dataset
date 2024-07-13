@@ -53,7 +53,7 @@ def download_Pdfs(journal_no):
                 hidden_inputs = row.find_elements(By.XPATH, ".//input[@type='hidden' and @name='FileName']")
                 for hInput in hidden_inputs:
                     file_name = hInput.get_attribute("value")
-                    file_id = file_name.split("/")[-2]
+                    # file_id = file_name.split("/")[-2]
                     jounralPdfsName.append(file_name)
                 
                 filterforms = row.find_elements(By.XPATH, ".//form")
