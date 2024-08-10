@@ -67,7 +67,7 @@ def extract_applications(filename):
         try:
             application_number_match = re.search(application_number_pattern, list(extracted_values.keys())[0])
         except IndexError:
-            print (f'Error in file {filename} at page no. {page.number}')
+            print (f'Error in file {filename} at page no. {page.number} because of application number')
 
         if application_number_match:
             application_number = application_number_match.group(1)
@@ -78,8 +78,14 @@ def extract_applications(filename):
 
         #exception - Abstract not found in the page, because shifted to next page - NEED TO BE WORKED
         if 'Abstract' not in extracted_values:
-            print (f'Error in file {filename}, with application no. {extracted_values['application_number']}')
-            break
+            print (f'Error in Abstract of file {filename}, with application no. {extracted_values['application_number']}')
+
+            second_last_key, second_last_value = list(extracted_values.items())[-2]
+            if 'Abstract' in second_last_key:  # Abstract not found - because Address of Inventor exists in 'Abstract'
+                print ("Abstract found")
+                new_key = "Abstract"
+
+                extracted_values[new_key] = extracted_values.pop(second_last_key)
 
         #extract page count and claim count:
         page_count_pattern = r'No. of Pages : (\d+)'
@@ -155,6 +161,7 @@ def extract_applications(filename):
         #extract applicants and separate the address
         try:
             applicants = re.split(r'\n\s*(?=\d+\))', extracted_values['Name of Applicant'])
+            
             address_pattern = r'Address of Applicant\s*:(.*?)(?=\d+\)|$)'
             applicants_list = []
             addresses = []
@@ -171,7 +178,7 @@ def extract_applications(filename):
             extracted_values['applicants'] = applicants_list
             extracted_values['addresses'] = addresses
         except:
-            print (f'Error in file {filename}, with application no. {extracted_values['application_number']}')
+            print (f'Error in Applicant of file {filename}, with application no. {extracted_values['application_number']}')
         
         extracted_values['Publication Type'] = 'Early' #NEED TO BE CALCULATED
         # print(extracted_values)
@@ -184,7 +191,7 @@ def extract_applications(filename):
             inv_list = [inv.strip() for inv in inv_names]
             extracted_values['inventor'] = inv_list
         except:
-            print (f'Error in file {filename}, with application no. {extracted_values['application_number']}')
+            print (f'Error in inventor of file {filename}, with application no. {extracted_values['application_number']}')
 
         #remove first entry
         for key in list(extracted_values.keys()):
@@ -210,7 +217,7 @@ def extract_applications(filename):
     
  #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    file = '22_2024_3.pdf' #enter file name #21_2024_1.pdf
+    file = '32_2024_1.pdf' #enter file name #21_2024_1.pdf
     df = pd.DataFrame()
 
     df = extract_applications(file)
