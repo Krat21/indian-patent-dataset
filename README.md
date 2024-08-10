@@ -62,7 +62,7 @@ download_pdfs.py : download PDFs for a given journal ('16/2024')
 main.py :  calls each of above scripts
 
 ## Coming Soon...
-- Years 2019 & before
+- Years 2018 & before
 - extract abstract images in applications
 - output in friendly format - json
 - Design Patents
@@ -71,5 +71,5 @@ main.py :  calls each of above scripts
 
 ## New Update...
 - Year 2024 - Latest Journal updated - Journal 32/2024 (09/08/2024)
-- Year 2020 Added
+- Year 2019 Added
 - Range Support
