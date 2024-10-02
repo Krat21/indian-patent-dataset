@@ -42,7 +42,7 @@ def extract_applications(filename):
             # Extract the text from the page
             content = page.get_text()
             page_list.append(content)
-    #print(page_list)
+    # print(page_list)
 
     df_final = pd.DataFrame()
     df_applications = pd.DataFrame()
@@ -51,8 +51,8 @@ def extract_applications(filename):
     pattern = r'\((\d{2})\)\s*([^:]+):([\s\S]*?)(?=\(\d{2}\)|$)'
 
     # page_list = [page_list[648]] #test single case
-    for content in page_list:
-        #print(content)
+    for index, content in enumerate(page_list):
+        # print(content)
         matches = re.findall(pattern, content)
         extracted_values = {}
 
@@ -60,32 +60,47 @@ def extract_applications(filename):
 
         for group1, group2, group3 in matches:
             extracted_values[re.sub(r'\s{2,}', ' ', group2.strip().replace('\n', ''))] = group3.strip()
-
         #data cleaning:
         #extract application number:
         application_number_pattern = r'Application No\.(\d+ [A-Z])'
+        application_number_pattern_2 = r'Application No\.(\d+\/[A-Z]+\/\d{4})'
         try:
             application_number_match = re.search(application_number_pattern, list(extracted_values.keys())[0])
-        except IndexError:
+        except:
             print (f'Error in file {filename} at page no. {page.number} because of application number')
 
         if application_number_match:
             application_number = application_number_match.group(1)
             extracted_values['application_number'] = application_number
-        else:
-            application_number = None
-            extracted_values['application_number'] = application_number
+        elif application_number_match == None: #exceptions - 6038/CHE/2015 A
+            try:
+                application_number_match_2 = re.search(application_number_pattern_2, list(extracted_values.keys())[0])
+            except:
+                print (f'Error in file {filename} at page no. {page.number} because of application number')
+            if application_number_match_2:
+                application_number = application_number_match_2.group(1)
+                extracted_values['application_number'] = application_number
 
         #exception - Abstract not found in the page, because shifted to next page - NEED TO BE WORKED
         if 'Abstract' not in extracted_values:
-            print (f'Error in Abstract of file {filename}, with application no. {extracted_values['application_number']}')
+            if (len(extracted_values) > 1):
+                print (f'Error in Abstract of file {filename}, with application no. {extracted_values['application_number']}')
+                second_last_key, second_last_value = list(extracted_values.items())[-2]
+                if 'Abstract' in second_last_key:  # Abstract not found - because Address of Inventor merged with 'Abstract'
+                    print ("Abstract found")
+                    new_key = "Abstract"
 
-            second_last_key, second_last_value = list(extracted_values.items())[-2]
-            if 'Abstract' in second_last_key:  # Abstract not found - because Address of Inventor exists in 'Abstract'
-                print ("Abstract found")
-                new_key = "Abstract"
-
-                extracted_values[new_key] = extracted_values.pop(second_last_key)
+                    extracted_values[new_key] = extracted_values.pop(second_last_key)
+                elif 'No. of Claims:' or 'No.of Pages:' in second_last_key: # Abstract not found - because name of Inventor merged with Abstract (FOUND in 34_2019_3)
+                    print ("Abstract found")
+                    new_key = "Abstract"
+                    extracted_values[new_key] = extracted_values.pop(second_last_key)
+                else:
+                    print("Rare Abstract Scenario")
+            else:
+                print(f'Something spilled to next page in file {filename}, with application no. {extracted_values['application_number']}')
+                #NEED TO WORK
+                continue
 
         #extract page count and claim count:
         page_count_pattern = r'No. of Pages : (\d+)'
@@ -95,6 +110,10 @@ def extract_applications(filename):
             if 'Abstract' in extracted_values:
                 page_count_match = re.search(page_count_pattern, extracted_values['Abstract'])
                 claim_count_match = re.search(claim_count_pattern, extracted_values['Abstract'])
+            else:
+                print(f'Abstrat does not exist in file {filename}, with application no. {extracted_values['application_number']}')
+                claim_count_match = False
+                page_count_match = False
 
             if claim_count_match and page_count_match:
                 extracted_values['page_count'] = page_count_match.group(1)
@@ -181,7 +200,6 @@ def extract_applications(filename):
             print (f'Error in Applicant of file {filename}, with application no. {extracted_values['application_number']}')
         
         extracted_values['Publication Type'] = 'Early' #NEED TO BE CALCULATED
-        # print(extracted_values)
 
         #extract inventors
         # print(extracted_values['Name of Inventor'])
@@ -217,8 +235,8 @@ def extract_applications(filename):
     
  #This file can be run independently to extract applications   
 if __name__ == "__main__":
-    file = '32_2024_1.pdf' #enter file name #21_2024_1.pdf
+    file = '09_2018_2.pdf' #enter file name #21_2024_1.pdf
     df = pd.DataFrame()
 
     df = extract_applications(file)
-    df.to_csv('applicationsExtracted.csv', mode='w', header=True, index=False)
+    df.to_csv('applicationsExtracted_09_2018_2.csv', mode='w', header=True, index=False)
