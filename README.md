@@ -70,6 +70,6 @@ main.py :  calls each of above scripts
 - multi-year range support
 
 ## New Update...
-- Year 2024 - Latest Journal updated - Journal 39/2024 (27/09/2024)
+- Year 2024 - Latest Journal updated - Journal 40/2024 (04/10/2024)
 - Year 2018 Added
 - Range Support
